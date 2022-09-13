@@ -1,6 +1,8 @@
 package com.bukable.lottery.controller;
 
+import com.bukable.lottery.config.RandomWebClient;
 import com.bukable.lottery.domain.Participant;
+import com.bukable.lottery.domain.WinParticipant;
 import com.bukable.lottery.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +22,14 @@ public class ParticipantController {
     }
 
     @PostMapping("/participant")
-    public List<Participant> Participant(@RequestBody Participant participant) {
+    public List<Participant> saveParticipant(@RequestBody Participant participant) {
         participantService.saveParticipant(participant);
-        return participantService.findAll();
+        return findParticipants();
+    }
+
+    @GetMapping("/start")
+    public WinParticipant start() {
+        return participantService.startLottery();
     }
 
 }

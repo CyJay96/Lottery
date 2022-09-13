@@ -1,6 +1,8 @@
 package com.bukable.lottery.service.impl;
 
+import com.bukable.lottery.config.RandomWebClient;
 import com.bukable.lottery.domain.Participant;
+import com.bukable.lottery.domain.WinParticipant;
 import com.bukable.lottery.repository.ParticipantRepo;
 import com.bukable.lottery.service.ParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import java.util.List;
 public class ParticipantServiceImpl implements ParticipantService {
 
     private final ParticipantRepo participantRepo;
+    private final RandomWebClient randomWebClient;
 
     @Override
     public List<Participant> findAll() {
@@ -20,15 +23,46 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public boolean saveParticipant(Participant participant) {
+    public void saveParticipant(Participant participant) {
         Participant participantFromDb = participantRepo.findByName(participant.getName());
 
-        if (participantFromDb != null) {
-            return false;
+        if (participantFromDb == null) {
+            participantRepo.save(participant);
+        }
+    }
+
+    @Override
+    public WinParticipant startLottery() {
+        List<Participant> participants = participantRepo.findAll();
+
+        if (participants.size() < 2) {
+            //todo
+            System.out.println("error");
         }
 
-        participantRepo.save(participant);
+        String randomStr;
+        int winningAmount = 0;
+        int winnerId = 0;
 
-        return true;
+        randomStr = randomWebClient.getRandomNumber(1, 1000).block();
+        if (randomStr != null) {
+            winningAmount = Integer.parseInt(randomStr.replace("\n", ""));
+        }
+
+        randomStr = randomWebClient.getRandomNumber(0, participants.size() - 1).block();
+        if (randomStr != null) {
+            winnerId = Integer.parseInt(randomStr.replace("\n", ""));
+        }
+
+
+        WinParticipant winParticipant = WinParticipant.builder()
+                .name(participants.get(winnerId).getName())
+                .age(participants.get(winnerId).getAge())
+                .city(participants.get(winnerId).getCity())
+                .winningAmount(winningAmount)
+                .build();
+
+        return winParticipant;
     }
+
 }
