@@ -42,20 +42,8 @@ public class ParticipantServiceImpl implements ParticipantService {
             System.out.println("error");
         }
 
-        String randomStr;
-        int winningAmount = 0;
-        int winnerId = 0;
-
-        randomStr = randomWebClient.getRandomNumber(1, 1000).block();
-        if (randomStr != null) {
-            winningAmount = Integer.parseInt(randomStr.replace("\n", ""));
-        }
-
-        randomStr = randomWebClient.getRandomNumber(0, participants.size() - 1).block();
-        if (randomStr != null) {
-            winnerId = Integer.parseInt(randomStr.replace("\n", ""));
-        }
-
+        int winningAmount = randomWebClient.getRandomNumber(1, 1000);
+        int winnerId = randomWebClient.getRandomNumber(0, participants.size() - 1);
 
         Winner winner = Winner.builder()
                 .name(participants.get(winnerId).getName())
@@ -65,6 +53,7 @@ public class ParticipantServiceImpl implements ParticipantService {
                 .build();
 
         winnerService.saveWinner(winner);
+        participantRepo.deleteAll();
 
         return winner;
     }
