@@ -14,7 +14,7 @@ import java.util.Objects;
 @ToString
 @Builder
 @AllArgsConstructor
-public class WinParticipant {
+public class Winner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,10 +28,10 @@ public class WinParticipant {
 
     private int winningAmount;
 
-    public WinParticipant() {
+    public Winner() {
     }
 
-    public WinParticipant(String name, int age, String city, int winningAmount) {
+    public Winner(String name, int age, String city, int winningAmount) {
         this.name = name;
         this.age = age;
         this.city = city;
@@ -42,7 +42,7 @@ public class WinParticipant {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WinParticipant that = (WinParticipant) o;
+        Winner that = (Winner) o;
         return age == that.age && winningAmount == that.winningAmount && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(city, that.city);
     }
 

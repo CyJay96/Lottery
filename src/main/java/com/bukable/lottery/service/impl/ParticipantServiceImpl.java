@@ -2,9 +2,10 @@ package com.bukable.lottery.service.impl;
 
 import com.bukable.lottery.config.RandomWebClient;
 import com.bukable.lottery.domain.Participant;
-import com.bukable.lottery.domain.WinParticipant;
+import com.bukable.lottery.domain.Winner;
 import com.bukable.lottery.repository.ParticipantRepo;
 import com.bukable.lottery.service.ParticipantService;
+import com.bukable.lottery.service.WinnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class ParticipantServiceImpl implements ParticipantService {
 
     private final ParticipantRepo participantRepo;
+    private final WinnerService winnerService;
     private final RandomWebClient randomWebClient;
 
     @Override
@@ -32,7 +34,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public WinParticipant startLottery() {
+    public Winner startLottery() {
         List<Participant> participants = participantRepo.findAll();
 
         if (participants.size() < 2) {
@@ -55,14 +57,16 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
 
 
-        WinParticipant winParticipant = WinParticipant.builder()
+        Winner winner = Winner.builder()
                 .name(participants.get(winnerId).getName())
                 .age(participants.get(winnerId).getAge())
                 .city(participants.get(winnerId).getCity())
                 .winningAmount(winningAmount)
                 .build();
 
-        return winParticipant;
+        winnerService.saveWinner(winner);
+
+        return winner;
     }
 
 }
