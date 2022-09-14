@@ -38,8 +38,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         List<Participant> participants = participantRepo.findAll();
 
         if (participants.size() < 2) {
-            //todo
-            System.out.println("error");
+            throw new IllegalArgumentException("The number of participants is less than 2");
         }
 
         int winningAmount = randomWebClient.getRandomNumber(1, 1000);
