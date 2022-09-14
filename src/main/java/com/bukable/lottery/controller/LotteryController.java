@@ -1,7 +1,7 @@
 package com.bukable.lottery.controller;
 
 import com.bukable.lottery.domain.Winner;
-import com.bukable.lottery.service.WinnerService;
+import com.bukable.lottery.service.LotteryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,18 +9,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
-@RequestMapping(value = "lottery/winners", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "lottery/start", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class WinnerController {
+public class LotteryController {
 
-    private final WinnerService winnerService;
+    private final LotteryService lotteryService;
 
     @GetMapping
-    public ResponseEntity<List<Winner>> findWinners() {
-        return ResponseEntity.ok(winnerService.findAll());
+    public ResponseEntity<Winner> start() {
+        Winner winner = lotteryService.startLottery();
+        return ResponseEntity.ok(winner);
     }
 
 }
